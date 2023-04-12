@@ -1,8 +1,7 @@
-
 from rest_framework import filters, mixins, viewsets
-from rest_framework.viewsets import GenericViewSet
-from reviews.models import Genre, Category
-from .serializers import GenreSerializer, CategorySerializer
+from rest_framework.viewsets import GenericViewSet, TitleViewSet
+from reviews.models import Genre, Category, Title
+from .serializers import GenreSerializer, CategorySerializer, TitleSerializer
 
 
 
@@ -12,6 +11,9 @@ class GenreViewSet(mixins.CreateModelMixin,
                    GenericViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
+    permission_classes = 'If SAFE - ALL, else - Admin'
+    filter_backends = [filters.SearchFilter]
+    search_fields = ('name',)
 
 class CategoryViewSet(mixins.CreateModelMixin,
                       mixins.ListModelMixin,
@@ -22,3 +24,9 @@ class CategoryViewSet(mixins.CreateModelMixin,
     permission_classes = 'If SAFE - ALL, else - Admin'
     filter_backends = [filters.SearchFilter]
     search_fields = ('name',)
+    
+    
+class TitleViewSet(viewsets.ModelViewSet):
+    queryset = Title.objects.all()
+    serializer_class = TitleSerializer
+    permission_classes = ('Add later')
