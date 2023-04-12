@@ -6,7 +6,7 @@ from rest_framework import routers
 router = routers.DefaultRouter
 router.register('categories', GenreViewSet)
 router.register('categories', CategoryViewSet)
-routers.register('titles', TitleViewSet)
+router.register('titles', TitleViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),

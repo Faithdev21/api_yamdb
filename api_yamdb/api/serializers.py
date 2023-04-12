@@ -16,7 +16,8 @@ class TitleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Title
         fields = '__all__'
-        read_only_fields = ('year', )
+        read_only_fields = ('year',)
+
 
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
@@ -24,8 +25,9 @@ class GenreSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ('slug',)
 
+
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = '__all__'
-        read_only_fields = ('slug', )
+        read_only_fields = ('slug',)

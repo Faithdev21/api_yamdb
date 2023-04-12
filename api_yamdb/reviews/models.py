@@ -1,6 +1,22 @@
 from django.db import models
 
 
+class Genre(models.Model):
+    name = models.CharField(max_length=256)
+    slug = models.SlugField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+
+class Category(models.Model):
+    name = models.CharField(max_length=256)
+    slug = models.SlugField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+
 class Title(models.Model):
     name = models.CharField(max_length=256)
     year = models.DateTimeField(
@@ -19,21 +35,6 @@ class Title(models.Model):
         related_name='title',
         verbose_name='Genre',
     )
-
-    def __str__(self):
-        return self.name
-
-
-class Genre(models.Model):
-    name = models.CharField(max_length=256)
-    slug = models.SlugField(max_length=50)
-
-    def __str__(self):
-        return self.name
-
-class Category(models.Model):
-    name = models.CharField(max_length=256)
-    slug = models.SlugField(max_length=50)
 
     def __str__(self):
         return self.name
