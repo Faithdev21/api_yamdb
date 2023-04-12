@@ -1,8 +1,17 @@
-from reviews.models import Category
-from api_yamdb.api.serializers import CategorySerializer
+
 from rest_framework import filters, mixins, viewsets
 from rest_framework.viewsets import GenericViewSet
+from reviews.models import Genre, Category
+from .serializers import GenreSerializer, CategorySerializer
 
+
+
+class GenreViewSet(mixins.CreateModelMixin,
+                   mixins.ListModelMixin,
+                   mixins.DestroyModelMixin,
+                   GenericViewSet):
+    queryset = Genre.objects.all()
+    serializer_class = GenreSerializer
 
 class CategoryViewSet(mixins.CreateModelMixin,
                       mixins.ListModelMixin,
