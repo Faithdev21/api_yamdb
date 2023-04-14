@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 
 class Genre(models.Model):
@@ -28,12 +29,16 @@ class Title(models.Model):
         on_delete=models.SET_NULL,
         related_name='title',
         verbose_name='Category',
+        blank=True,
+        null=True,
     )
     genre = models.ForeignKey(
         Genre,
         on_delete=models.SET_NULL,
         related_name='title',
         verbose_name='Genre',
+        blank=True,
+        null=True,
     )
 
     def __str__(self):

@@ -1,28 +1,24 @@
-from rest_framework import filters, mixins, viewsets
-from rest_framework.viewsets import GenericViewSet
+from rest_framework import filters, viewsets
+
 from reviews.models import Genre, Category, Title
+from .permissions import IsAdminOrSuperUser
 from .serializers import GenreSerializer, CategorySerializer, TitleSerializer
 from django_filters.rest_framework import DjangoFilterBackend
+from .mixins import CreateListDestroy
 
 
-class GenreViewSet(mixins.CreateModelMixin,
-                   mixins.ListModelMixin,
-                   mixins.DestroyModelMixin,
-                   GenericViewSet):
+class GenreViewSet(CreateListDestroy):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
-    permission_classes = 'If SAFE - ALL, else - Admin'
+    permission_classes = [IsAdminOrSuperUser]
     filter_backends = [filters.SearchFilter]
     search_fields = ('name',)
 
 
-class CategoryViewSet(mixins.CreateModelMixin,
-                      mixins.ListModelMixin,
-                      mixins.DestroyModelMixin,
-                      GenericViewSet):
+class CategoryViewSet(CreateListDestroy):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = 'If SAFE - ALL, else - Admin'
+    permission_classes = [IsAdminOrSuperUser]
     filter_backends = [filters.SearchFilter]
     search_fields = ('name',)
 
@@ -30,7 +26,7 @@ class CategoryViewSet(mixins.CreateModelMixin,
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
-    permission_classes = ('Add later')
+    permission_classes = [IsAdminOrSuperUser]
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ('category', 'genre', 'name', 'year')
 
