@@ -1,11 +1,12 @@
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 
-class Feedback(models.Model):
+class Reviews(models.Model):
     title = models.ForeignKey(
         Title,
         on_delete=models.CASCADE,
-        related_name='feedback',
+        related_name='reviews',
         verbose_name='product'
     )
     text = models.CharField(
@@ -14,8 +15,16 @@ class Feedback(models.Model):
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='feedback',
+        related_name='reviews',
         verbose_name='author'
+    )
+    score = models.IntegerField(
+        validators=(
+            MinValueValidator(1),
+            MaxValueValidator(10)
+        ),
+        error_messages={'validators': 'Rating from 1 to 10!'},
+        verbose_name='rating'
     )
     pub_date = models.DateTimeField(
         'publication date',
