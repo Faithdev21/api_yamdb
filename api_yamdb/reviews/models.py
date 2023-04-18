@@ -19,6 +19,7 @@ class Reviews(models.Model):
         verbose_name='author'
     )
     score = models.IntegerField(
+        default=0,
         validators=(
             MinValueValidator(1),
             MaxValueValidator(10)
