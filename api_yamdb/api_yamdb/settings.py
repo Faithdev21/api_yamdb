@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -10,7 +11,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-# Application definition
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -23,6 +26,7 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'reviews.apps.ReviewsConfig',
     'django_filters',
+]
 
 
 AUTH_USER_MODEL = 'users.User'
