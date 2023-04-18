@@ -17,6 +17,7 @@ class UserSerializer(serializers.ModelSerializer):
             'username', 'email', 'first_name',
             'last_name', 'bio', 'role')
 
+
     def validate_username(self, value):
         if value.lower() == 'me':
             raise serializers.ValidationError('Username cannot be me')
