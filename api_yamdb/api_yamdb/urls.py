@@ -20,6 +20,7 @@ from django.conf.urls.static import static
 from django.views.generic import TemplateView
 
 urlpatterns = [
+    path('auth/', include('users.urls')),
     path('admin/', admin.site.urls),
     path(
         'redoc/',
