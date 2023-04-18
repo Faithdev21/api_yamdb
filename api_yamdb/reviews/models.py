@@ -23,7 +23,7 @@ class Title(models.Model):
     year = models.DateTimeField(
         'Created date', auto_now_add=True
     )
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
     category = models.ForeignKey(
         Category,
         on_delete=models.SET_NULL,
