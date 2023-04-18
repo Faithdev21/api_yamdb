@@ -6,7 +6,7 @@ from .models import User
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = '__all__'
+        fields = ('username', 'email', 'first_name', 'last_name', 'bio', 'role')
 
     def validate_username(self, value):
         if value.lower() == 'me':
@@ -15,9 +15,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class TokenSerializer(serializers.Serializer):
-    username = serializers.CharField()
-    confirmation_code = serializers.CharField()
-
     class Meta:
         model = User
         fields = ('username', 'confirmation_code')

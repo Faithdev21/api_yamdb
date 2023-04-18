@@ -12,7 +12,6 @@ class GenreViewSet(CreateListDestroy):
     serializer_class = GenreSerializer
     permission_classes = [IsAdminOrSuperUser]
     filter_backends = [filters.SearchFilter]
-    filter_backends = [filters.SearchFilter]
     search_fields = ('name',)
 
 

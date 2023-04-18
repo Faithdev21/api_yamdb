@@ -11,7 +11,6 @@ from .serializers import UserSerializer, TokenSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 
 
-
 @api_view(['POST', ])
 def get_confirmation(request):
     serializer = UserSerializer(data=request.data)
@@ -54,4 +53,3 @@ def get_token(request):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-

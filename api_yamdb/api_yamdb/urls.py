@@ -21,16 +21,16 @@ from django.conf.urls.static import static
 
 
 urlpatterns = [
-    path('', include('users.urls')),
-    path('auth/', include('users.urls')),
+    path('api/v1/', include('users.urls')),
+    path('api/', include('api.urls')),
     path('admin/', admin.site.urls),
     path(
         'redoc/',
         TemplateView.as_view(template_name='redoc.html'),
         name='redoc'
     ),
-    path('api/', include('api.urls')),
 ]
+
 
 if settings.DEBUG:
     urlpatterns += static(
