@@ -10,12 +10,6 @@ ROLE_CHOICES = [
 
 
 class User(AbstractUser):
-    email = models.EmailField(
-        'Email',
-        max_length=254,
-        unique=True,
-        null=False,
-    ),
     bio = models.TextField(
         'Biography',
         blank=True,
@@ -23,7 +17,8 @@ class User(AbstractUser):
     role = models.CharField(
         'Role',
         choices=ROLE_CHOICES,
-        default='USER'
+        default='USER',
+        max_length=10
     )
 
     def __str__(self) -> str:
