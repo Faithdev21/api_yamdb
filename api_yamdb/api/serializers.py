@@ -1,9 +1,8 @@
-from django.db.models import Avg
-from rest_framework import serializers
 from django.core.exceptions import ValidationError
+from django.db.models import Avg
 from django.shortcuts import get_object_or_404
-
-from reviews.models import Review
+from rest_framework import serializers
+from reviews.models import Review, Comment
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -41,3 +40,18 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     def rating_average(self):
         return Title.objects.aggregate(Avg('score'))
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    review = serializers.SlugRelatedField(
+        slug_field='text',
+        read_only=True
+    )
+    author = serializers.SlugRelatedField(
+        slug_field='username',
+        read_only=True
+    )
+
+    class Meta:
+        fields = '__all__'
+        model = Comment

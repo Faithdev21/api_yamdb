@@ -2,7 +2,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 
-class Reviews(models.Model):
+class Review(models.Model):
     title = models.ForeignKey(
         Title,
         on_delete=models.CASCADE,
@@ -38,7 +38,7 @@ class Reviews(models.Model):
         verbose_name_plural = 'feedbacks'
         constraints = [
             models.UniqueConstraint(
-                fields=('title', 'author', ),
+                fields=('title', 'author',),
                 name='unique feedback'
             )]
         ordering = ('pub_date',)
@@ -46,3 +46,32 @@ class Reviews(models.Model):
     def __str__(self):
         return self.text
 
+
+class Comment(models.Model):
+    review = models.ForeignKey(
+        Review,
+        on_delete=models.CASCADE,
+        related_name='comments',
+        verbose_name='feedback'
+    )
+    text = models.CharField(
+        max_length=200
+    )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='comments',
+        verbose_name='author'
+    )
+    pub_date = models.DateTimeField(
+        'publication_date',
+        auto_now_add=True,
+        db_index=True
+    )
+
+    class Meta:
+        verbose_name = 'comment'
+        verbose_name_plural = 'comments'
+
+    def __str__(self):
+        return self.text
