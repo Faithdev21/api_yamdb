@@ -1,3 +1,4 @@
+from django.db.models import Avg
 from rest_framework import serializers
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
@@ -14,6 +15,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         slug_field='username',
         read_only=True
     )
+    rating_average = serializers.SerializerMethodField()
 
     def validate_score(self, value):
         if 0 >= value >= 10:
@@ -36,3 +38,6 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         model = Review
+
+    def rating_average(self):
+        return Title.objects.aggregate(Avg('score'))
