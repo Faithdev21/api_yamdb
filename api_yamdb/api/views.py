@@ -10,7 +10,7 @@ from .mixins import CreateListDestroy
 class GenreViewSet(CreateListDestroy):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
-    permission_classes = [IsAdminOrSuperUser]
+    permission_classes = [AdminModeratorAuthorPermission]
     filter_backends = [filters.SearchFilter]
     search_fields = ('name',)
 
@@ -18,7 +18,7 @@ class GenreViewSet(CreateListDestroy):
 class CategoryViewSet(CreateListDestroy):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = [IsAdminOrSuperUser]
+    permission_classes = [AdminModeratorAuthorPermission]
     filter_backends = [filters.SearchFilter]
     search_fields = ('name',)
 
@@ -26,7 +26,7 @@ class CategoryViewSet(CreateListDestroy):
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
-    permission_classes = [IsAdminOrSuperUser]
+    permission_classes = [AdminModeratorAuthorPermission]
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ('category', 'genre', 'name', 'year')
 
