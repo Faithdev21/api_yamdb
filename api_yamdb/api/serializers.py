@@ -2,7 +2,39 @@ from django.core.exceptions import ValidationError
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
-from reviews.models import Review, Comment
+from reviews.models import Review, Comment, Title, Genre, Category
+from rest_framework.relations import SlugRelatedField
+
+
+
+class TitleSerializer(serializers.ModelSerializer):
+    category = SlugRelatedField(
+        slug_field='name',
+        read_only=True,
+    )
+    genre = SlugRelatedField(
+        slug_field='name',
+        read_only=True,
+    )
+
+    class Meta:
+        model = Title
+        fields = '__all__'
+        read_only_fields = ('year',)
+
+
+class GenreSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Genre
+        fields = '__all__'
+        read_only_fields = ('slug',)
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = '__all__'
+        read_only_fields = ('slug',)
 
 
 class ReviewSerializer(serializers.ModelSerializer):
