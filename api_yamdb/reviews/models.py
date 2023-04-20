@@ -1,26 +1,28 @@
+from enum import unique
+
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from users.models import User
 
 
 class Genre(models.Model):
-    name = models.CharField(max_length=256)
-    slug = models.SlugField(max_length=50)
+    name = models.CharField(max_length=256, unique=True)
+    slug = models.SlugField(max_length=50, unique=True)
 
     def __str__(self):
         return self.name
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=256)
-    slug = models.SlugField(max_length=50)
+    name = models.CharField(max_length=256, unique=True)
+    slug = models.SlugField(max_length=50, unique=True)
 
     def __str__(self):
         return self.name
 
 
 class Title(models.Model):
-    name = models.CharField(max_length=256)
+    name = models.CharField(max_length=256, unique=True)
     year = models.DateTimeField(
         'Created date', auto_now_add=True
     )
@@ -61,7 +63,7 @@ class Review(models.Model):
         verbose_name='author'
     )
     score = models.IntegerField(
-        default=0,
+        default=1,
         validators=(
             MinValueValidator(1),
             MaxValueValidator(10)
@@ -83,7 +85,7 @@ class Review(models.Model):
                 fields=('title', 'author',),
                 name='unique feedback'
             )]
-        ordering = ('pub_date',)
+        ordering = ('-pub_date',)
 
     def __str__(self):
         return self.text
@@ -114,6 +116,7 @@ class Comment(models.Model):
     class Meta:
         verbose_name = 'comment'
         verbose_name_plural = 'comments'
+        ordering = ('-pub_date',)
 
     def __str__(self):
         return self.text

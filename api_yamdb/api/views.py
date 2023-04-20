@@ -13,6 +13,7 @@ class GenreViewSet(CreateListDestroy):
     permission_classes = [AdminModeratorAuthorPermission]
     filter_backends = [filters.SearchFilter]
     search_fields = ('name',)
+    lookup_field = 'slug'
 
 
 class CategoryViewSet(CreateListDestroy):

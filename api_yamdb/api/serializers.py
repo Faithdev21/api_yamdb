@@ -14,6 +14,7 @@ class TitleSerializer(serializers.ModelSerializer):
     genre = SlugRelatedField(
         slug_field='name',
         read_only=True,
+        many=True,
     )
 
     class Meta:

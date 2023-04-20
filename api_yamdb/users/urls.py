@@ -10,6 +10,5 @@ urlpatterns = [
     path('auth/signup/', get_confirmation),
     path('auth/token/', get_token),
     path('', include(router_v1.urls)),
-
 ]
 
