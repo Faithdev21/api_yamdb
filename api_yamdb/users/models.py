@@ -2,11 +2,11 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from .validators import validate_username
 
-ROLE_CHOICES = [
-    ('USER', 'user'),
-    ('MODERATOR', 'moderator'),
-    ('ADMIN', 'admin'),
-]
+ROLE_CHOICES = (
+    ('user', 'USER',),
+    ('moderator', 'MODERATOR'),
+    ('admin', 'ADMIN'),
+)
 
 
 class User(AbstractUser):
@@ -17,7 +17,7 @@ class User(AbstractUser):
     role = models.CharField(
         'Role',
         choices=ROLE_CHOICES,
-        default='user',
+        default="user",
         max_length=50
     )
     email = models.EmailField(
@@ -33,6 +33,7 @@ class User(AbstractUser):
         blank=False,
         null=False,
         unique=True,
+        validators=[validate_username]
     )
 
     def __str__(self):

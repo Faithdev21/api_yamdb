@@ -4,6 +4,7 @@ from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, filters
 from rest_framework.decorators import api_view, action, permission_classes
+from rest_framework.filters import SearchFilter
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
@@ -28,7 +29,7 @@ def get_confirmation(request):
             error = (
                 'login failed'
                 if User.objects.filter(username=username).exists()
-                else 'EMAIL_ERROR'
+                else 'email already exists'
             )
             return Response(error, status.HTTP_400_BAD_REQUEST)
         confirmation_code = default_token_generator.make_token(user)
@@ -85,6 +86,6 @@ class UserViewSet(viewsets.ModelViewSet):
                 self.request.user, data=request.data, partial=True
             )
             serializer.is_valid(raise_exception=True)
-            serializer.save()
+            serializer.save(role=request.user.role, partial=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.data, status=status.HTTP_200_OK)
