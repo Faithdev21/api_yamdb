@@ -1,26 +1,36 @@
 from django.core.mail import send_mail
 from django.contrib.auth.tokens import default_token_generator
+from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets
-from rest_framework.authentication import TokenAuthentication
+from rest_framework import viewsets, filters
 from rest_framework.decorators import api_view, action, permission_classes
-from rest_framework.permissions import IsAdminUser, IsAuthenticated, AllowAny
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 
+from api.permissions import IsAdmin
 from .models import User
-from .serializers import UserSerializer, TokenSerializer
-from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
+from .serializers import UserSerializer, TokenSerializer, UserSignupSerializer, MeSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 @api_view(['POST', ])
 @permission_classes([AllowAny])
 def get_confirmation(request):
-    serializer = UserSerializer(data=request.data)
-    if serializer.is_valid():
-        username = serializer.validated_data.get('username')
-        email = serializer.validated_data.get('email')
-        user, _ = User.objects.get_or_create(email=email, username=username)
+    serializer = UserSignupSerializer(data=request.data)
+    if serializer.is_valid(raise_exception=True):
+        try:
+            username = serializer.validated_data.get('username')
+            email = serializer.validated_data.get('email')
+            user, _ = User.objects.get_or_create(email=email, username=username)
+        except IntegrityError:
+            error = (
+                'login failed'
+                if User.objects.filter(username=username).exists()
+                else 'EMAIL_ERROR'
+            )
+            return Response(error, status.HTTP_400_BAD_REQUEST)
         confirmation_code = default_token_generator.make_token(user)
         send_mail(
             'Confirmation code',
@@ -57,17 +67,22 @@ def get_token(request):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = (IsAdminUser,)
+    permission_classes = [IsAdmin]
+    lookup_field = 'username'
+    pagination_class = PageNumberPagination
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ['=username']
+    http_method_names = ['get', 'post', 'patch', 'delete']
 
-    @api_view(['GET', 'PATCH'])
     @action(detail=False,
             url_path='me', url_name='me',
-            permission_classes=(IsAuthenticated,))
+            methods=['get', 'patch'],
+            permission_classes=[IsAuthenticated])
     def user_profile(self, request):
-        serializer = UserSerializer(request.user)
+        serializer = MeSerializer(self.request.user)
         if request.method == 'PATCH':
-            serializer = UserSerializer(
-                request.user, data=request.data, partial=True
+            serializer = MeSerializer(
+                self.request.user, data=request.data, partial=True
             )
             serializer.is_valid(raise_exception=True)
             serializer.save()

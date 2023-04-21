@@ -17,7 +17,7 @@ class User(AbstractUser):
     role = models.CharField(
         'Role',
         choices=ROLE_CHOICES,
-        default='USER',
+        default='user',
         max_length=50
     )
     email = models.EmailField(
@@ -33,7 +33,6 @@ class User(AbstractUser):
         blank=False,
         null=False,
         unique=True,
-        validators=[validate_username, ]
     )
 
     def __str__(self):
@@ -41,12 +40,8 @@ class User(AbstractUser):
 
     @property
     def is_moderator(self):
-        return self.role == 'MODERATOR'
+        return self.role == 'moderator'
 
     @property
     def is_admin(self):
-        return self.role == (
-                'ADMIN'
-                or self.is_staff
-                or self.is_superuser
-        )
+        return self.role == 'admin' or self.is_staff
