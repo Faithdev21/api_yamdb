@@ -22,7 +22,7 @@ class CategoryViewSet(CreateListDestroy):
     permission_classes = [AdminModeratorAuthorPermission]
     filter_backends = [filters.SearchFilter]
     search_fields = ('name',)
-
+    lookup_field = 'slug'
 
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()

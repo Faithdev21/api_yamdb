@@ -7,7 +7,7 @@ from users.models import User
 
 class Genre(models.Model):
     name = models.CharField(max_length=256, unique=True)
-    slug = models.SlugField(max_length=50, unique=True)
+    slug = models.SlugField(max_length=50)
 
     def __str__(self):
         return self.name
@@ -15,7 +15,7 @@ class Genre(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=256, unique=True)
-    slug = models.SlugField(max_length=50, unique=True)
+    slug = models.SlugField(max_length=50)
 
     def __str__(self):
         return self.name
@@ -37,13 +37,34 @@ class Title(models.Model):
     )
     genre = models.ManyToManyField(
         Genre,
+        through="GenreTitle",
         related_name='title',
         verbose_name='Genre',
-        blank=True,
+        blank=False,
     )
 
     def __str__(self):
         return self.name
+
+
+class GenreTitle(models.Model):
+    genre = models.ForeignKey(
+        Genre,
+        on_delete=models.SET_NULL,
+        related_name='genre_title',
+        verbose_name='Genre',
+        blank=True, null=True
+    )
+    title = models.ForeignKey(
+        Title,
+        on_delete=models.CASCADE,
+        related_name='genre_title',
+        verbose_name='Title',
+        blank=True, null=True
+    )
+
+    def __str__(self):
+        return f'{self.title.name} - {self.genre.name}'
 
 
 class Review(models.Model):

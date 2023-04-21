@@ -27,14 +27,12 @@ class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Genre
         fields = '__all__'
-        read_only_fields = ('slug',)
 
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = '__all__'
-        read_only_fields = ('slug',)
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -58,10 +56,8 @@ class ReviewSerializer(serializers.ModelSerializer):
         author = request.user
         title_id = self.context.get('view').kwargs.get('title_id')
         title = get_object_or_404(Title, pk=title_id)
-        if (
-                request.method == 'POST'
-                and Review.objects.filter(title=title, author=author).exists()
-        ):
+        if (request.method == 'POST' and
+                Review.objects.filter(title=title, author=author).exists()):
             raise ValidationError('You can only leave one '
                                   'review for a product!')
         return data
