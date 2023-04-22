@@ -15,14 +15,13 @@ ALLOWED_HOSTS = ['*']
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
 
-INSTALLED_APPS: list[str] = [
+INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework_simplejwt.token_blacklist'
     'rest_framework',
     'rest_framework_simplejwt',
     'users.apps.UsersConfig',
@@ -31,7 +30,7 @@ INSTALLED_APPS: list[str] = [
     'django_filters',
 ]
 
-MIDDLEWARE: list[str] = [
+MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -104,7 +103,7 @@ USE_TZ: bool = True
 
 STATIC_URL: str = '/static/'
 
-STATICFILES_DIRS: tuple[Path] = ((BASE_DIR / 'static/'),)
+STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
 
 DEFAULT_AUTO_FIELD: str = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL: str = 'users.User'
