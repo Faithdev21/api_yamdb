@@ -22,6 +22,7 @@ INSTALLED_APPS: list[str] = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework_simplejwt.token_blacklist'
     'rest_framework',
     'rest_framework_simplejwt',
     'users.apps.UsersConfig',
@@ -108,7 +109,7 @@ STATICFILES_DIRS: tuple[Path] = ((BASE_DIR / 'static/'),)
 DEFAULT_AUTO_FIELD: str = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL: str = 'users.User'
 
-REST_FRAMEWORK: dict[str, int | list[str] | str] = {
+REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
@@ -121,7 +122,7 @@ REST_FRAMEWORK: dict[str, int | list[str] | str] = {
 }
 
 
-SIMPLE_JWT: dict[str, timedelta | tuple[str]] = {
+SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
