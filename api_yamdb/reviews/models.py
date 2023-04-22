@@ -1,31 +1,30 @@
-from enum import unique
-
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from users.models import User
 
 
 class Genre(models.Model):
-    name = models.CharField(max_length=256, unique=True)
-    slug = models.SlugField(max_length=50)
+    """Used to classify titles by genre."""
+    name = models.CharField(max_length=256)
+    slug = models.SlugField(max_length=50, unique=True)
 
     def __str__(self):
         return self.name
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=256, unique=True)
-    slug = models.SlugField(max_length=50)
+    """Used to classify titles by categories."""
+    name = models.CharField(max_length=256)
+    slug = models.SlugField(max_length=50, unique=True)
 
     def __str__(self):
         return self.name
 
 
 class Title(models.Model):
+    """Used as a source of data about art titles."""
     name = models.CharField(max_length=256, unique=True)
-    year = models.DateTimeField(
-        'Created date', auto_now_add=True
-    )
+    year = models.IntegerField(null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     category = models.ForeignKey(
         Category,
@@ -48,6 +47,7 @@ class Title(models.Model):
 
 
 class GenreTitle(models.Model):
+    """Used to classify titles by genre."""
     genre = models.ForeignKey(
         Genre,
         on_delete=models.SET_NULL,
@@ -68,6 +68,7 @@ class GenreTitle(models.Model):
 
 
 class Review(models.Model):
+    """Used as a source of data about title reviews."""
     title = models.ForeignKey(
         Title,
         on_delete=models.CASCADE,
@@ -113,6 +114,7 @@ class Review(models.Model):
 
 
 class Comment(models.Model):
+    """Used as a source of data about comments to title reviews."""
     review = models.ForeignKey(
         Review,
         on_delete=models.CASCADE,

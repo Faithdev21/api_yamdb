@@ -19,6 +19,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 @api_view(['POST', ])
 @permission_classes([AllowAny])
 def get_confirmation(request):
+    """Registers the user
+    and sends him a confirmation code to the email address."""
     serializer = UserSignupSerializer(data=request.data)
     if serializer.is_valid(raise_exception=True):
         try:
@@ -47,6 +49,7 @@ def get_confirmation(request):
 @api_view(['POST', ])
 @permission_classes([AllowAny])
 def get_token(request):
+    """Checks the confirmation code and issues a token."""
     serializer = TokenSerializer(data=request.data)
     if serializer.is_valid():
         username = get_object_or_404(
@@ -66,6 +69,7 @@ def get_token(request):
 
 
 class UserViewSet(viewsets.ModelViewSet):
+    """Provides views for instances of the user class."""
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAdmin]
