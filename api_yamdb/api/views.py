@@ -43,7 +43,7 @@ class TitleViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_class = TitlesFilter
 
-    def get_serializer_class(self) -> [TitlePostSerializer | TitleSerializer]:
+    def get_serializer_class(self):
         if self.request.method in ('POST', 'PATCH'):
             return TitlePostSerializer
         return TitleSerializer
