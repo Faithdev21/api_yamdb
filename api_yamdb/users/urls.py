@@ -1,11 +1,8 @@
-from django.urls import include, path
-from rest_framework.routers import DefaultRouter
+from django.urls import path
 
-from .views import UserViewSet, get_token, get_confirmation
-
+from .views import get_confirmation, get_token
 
 urlpatterns = [
     path('signup/', get_confirmation),
     path('token/', get_token),
 ]
-

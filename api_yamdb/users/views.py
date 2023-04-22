@@ -1,19 +1,18 @@
-from django.core.mail import send_mail
+from api.permissions import IsAdmin
 from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import send_mail
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, filters
-from rest_framework.decorators import api_view, action, permission_classes
-from rest_framework.filters import SearchFilter
+from rest_framework import filters, status, viewsets
+from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import status
-
-from api.permissions import IsAdmin
-from .models import User
-from .serializers import UserSerializer, TokenSerializer, UserSignupSerializer, MeSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
+
+from .models import User
+from .serializers import (MeSerializer, TokenSerializer, UserSerializer,
+                          UserSignupSerializer)
 
 
 @api_view(['POST', ])
@@ -24,17 +23,18 @@ def get_confirmation(request):
     serializer = UserSignupSerializer(data=request.data)
     if serializer.is_valid(raise_exception=True):
         try:
-            username = serializer.validated_data.get('username')
-            email = serializer.validated_data.get('email')
-            user, _ = User.objects.get_or_create(email=email, username=username)
+            username: str = serializer.validated_data.get('username')
+            email: str = serializer.validated_data.get('email')
+            user, _ = User.objects.get_or_create(
+                email=email, username=username)
         except IntegrityError:
-            error = (
+            error: str = (
                 'login failed'
                 if User.objects.filter(username=username).exists()
                 else 'email already exists'
             )
             return Response(error, status.HTTP_400_BAD_REQUEST)
-        confirmation_code = default_token_generator.make_token(user)
+        confirmation_code: str = default_token_generator.make_token(user)
         send_mail(
             'Confirmation code',
             f'{username}!, your confirmation code is: {confirmation_code}',
@@ -56,10 +56,10 @@ def get_token(request):
             User,
             username=serializer.validated_data.get('username')
         )
-        code = serializer.validated_data.get('confirmation_code')
+        code: str = serializer.validated_data.get('confirmation_code')
         if default_token_generator.check_token(username, code):
             refresh = RefreshToken.for_user(username)
-            token = {
+            token: dict[str, str] = {
                 'refresh': str(refresh),
                 'access': str(refresh.access_token),
             }
@@ -73,11 +73,11 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAdmin]
-    lookup_field = 'username'
+    lookup_field: str = 'username'
     pagination_class = PageNumberPagination
     filter_backends = (filters.SearchFilter,)
-    search_fields = ['=username']
-    http_method_names = ['get', 'post', 'patch', 'delete']
+    search_fields: list[str] = ['=username']
+    http_method_names: list[str] = ['get', 'post', 'patch', 'delete']
 
     @action(detail=False,
             url_path='me', url_name='me',

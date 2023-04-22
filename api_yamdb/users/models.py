@@ -1,8 +1,10 @@
-from django.db import models
+from api import constants
 from django.contrib.auth.models import AbstractUser
+from django.db import models
+
 from .validators import validate_username
 
-ROLE_CHOICES = (
+ROLE_CHOICES: tuple[tuple[str, str], tuple[str, str], tuple[str, str]] = (
     ('user', 'USER',),
     ('moderator', 'MODERATOR'),
     ('admin', 'ADMIN'),
@@ -10,6 +12,7 @@ ROLE_CHOICES = (
 
 
 class User(AbstractUser):
+    """ Custom User model."""
     bio = models.TextField(
         'Biography',
         blank=True,
@@ -18,18 +21,18 @@ class User(AbstractUser):
         'Role',
         choices=ROLE_CHOICES,
         default="user",
-        max_length=50
+        max_length=constants.USER_ROLE_MAX_LENGTH
     )
     email = models.EmailField(
         verbose_name='email address',
         unique=True,
         blank=False,
         null=False,
-        max_length=254,
+        max_length=constants.USER_EMAIL_MAX_LENGTH,
     )
     username = models.CharField(
         verbose_name='username',
-        max_length=150,
+        max_length=constants.USER_USERNAME_MAX_LENGTH,
         blank=False,
         null=False,
         unique=True,
@@ -40,9 +43,11 @@ class User(AbstractUser):
         return self.username
 
     @property
-    def is_moderator(self):
+    def is_moderator(self) -> bool:
+        """ Check if the user is a moderator."""
         return self.role == 'moderator'
 
     @property
-    def is_admin(self):
+    def is_admin(self) -> bool:
+        """ Check if the user is an admin."""
         return self.role == 'admin' or self.is_staff

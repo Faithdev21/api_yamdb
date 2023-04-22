@@ -1,16 +1,16 @@
 from django.db.models import Avg
-from rest_framework import filters, viewsets
 from django.shortcuts import get_object_or_404
-from rest_framework.filters import OrderingFilter
-from rest_framework.pagination import PageNumberPagination
-
-from reviews.models import Genre, Category, Title, Review
-from .filters import TitlesFilter
-from .permissions import AdminModeratorAuthorPermission, IsAdminOrReadOnly
-from .serializers import GenreSerializer, CategorySerializer, TitleSerializer, ReviewSerializer, CommentSerializer, \
-    TitlePostSerializer
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, viewsets
+from rest_framework.pagination import PageNumberPagination
+from reviews.models import Category, Genre, Review, Title
+
+from .filters import TitlesFilter
 from .mixins import CreateListDestroy
+from .permissions import AdminModeratorAuthorPermission, IsAdminOrReadOnly
+from .serializers import (CategorySerializer, CommentSerializer,
+                          GenreSerializer, ReviewSerializer,
+                          TitlePostSerializer, TitleSerializer)
 
 
 class GenreViewSet(CreateListDestroy):
@@ -30,21 +30,21 @@ class CategoryViewSet(CreateListDestroy):
     serializer_class = CategorySerializer
     permission_classes = [IsAdminOrReadOnly]
     filter_backends = [filters.SearchFilter]
-    search_fields = ('name',)
-    lookup_field = 'slug'
+    search_fields: tuple[str] = ('name',)
+    lookup_field: str = 'slug'
     pagination_class = PageNumberPagination
 
 
 class TitleViewSet(viewsets.ModelViewSet):
     """Provides views for instances of the title class."""
-    queryset = Title.objects.annotate(rating=Avg("reviews__score"))
+    queryset = Title.objects.annotate(rating=Avg('reviews__score'))
     serializer_class = TitleSerializer
     permission_classes = [IsAdminOrReadOnly]
     filter_backends = [DjangoFilterBackend]
     filterset_class = TitlesFilter
 
-    def get_serializer_class(self):
-        if self.request.method == ('POST' or 'PATCH'):
+    def get_serializer_class(self) -> [TitlePostSerializer | TitleSerializer]:
+        if self.request.method in ('POST', 'PATCH'):
             return TitlePostSerializer
         return TitleSerializer
 

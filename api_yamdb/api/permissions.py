@@ -1,30 +1,33 @@
-from rest_framework import permissions
+from rest_framework.permissions import SAFE_METHODS, BasePermission
 
 
-class AdminModeratorAuthorPermission(permissions.BasePermission):
+class AdminModeratorAuthorPermission(BasePermission):
     """Used to issue permissions to admins, moderators, authors."""
-    def has_permission(self, request, view):
-        return (request.method in permissions.SAFE_METHODS
+
+    def has_permission(self, request, view) -> bool:
+        return (request.method in SAFE_METHODS
                 or request.user.is_authenticated)
 
-    def has_object_permission(self, request, view, obj):
-        return (request.method in permissions.SAFE_METHODS
+    def has_object_permission(self, request, view, obj) -> bool:
+        return (request.method in SAFE_METHODS
                 or request.user.is_admin
                 or request.user.is_moderator
                 or obj.author == request.user)
 
 
-class IsAdmin(permissions.BasePermission):
+class IsAdmin(BasePermission):
     """Used to issue permissions to admins."""
-    def has_permission(self, request, view):
-        return request.user.is_superuser or (request.user.is_authenticated and request.user.is_admin)
+    def has_permission(self, request, view) -> bool:
+        return (request.user.is_superuser
+                or (request.user.is_authenticated and request.user.is_admin))
 
 
-class IsAdminOrReadOnly(permissions.BasePermission):
+class IsAdminOrReadOnly(BasePermission):
     """Used to issue permissions to admins or read only."""
-    def has_permission(self, request, view):
+
+    def has_permission(self, request, view) -> bool:
         return (
-                request.method in permissions.SAFE_METHODS
-                or request.user.is_authenticated
-                and request.user.is_admin
+            request.method in SAFE_METHODS
+            or request.user.is_authenticated
+            and request.user.is_admin
         )

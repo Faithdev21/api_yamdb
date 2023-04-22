@@ -6,4 +6,5 @@ class CreateListDestroy(mixins.CreateModelMixin,
                         mixins.ListModelMixin,
                         mixins.DestroyModelMixin,
                         GenericViewSet):
+    """Class that includes create, list, and destroy methods."""
     pass

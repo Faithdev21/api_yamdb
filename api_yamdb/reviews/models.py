@@ -1,12 +1,19 @@
+from api import constants
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.db.models import UniqueConstraint
 from users.models import User
 
 
 class Genre(models.Model):
     """Used to classify titles by genre."""
-    name = models.CharField(max_length=256)
-    slug = models.SlugField(max_length=50, unique=True)
+    name = models.CharField(max_length=constants.GENRE_NAME_MAX_LENGTH)
+    slug = models.SlugField(
+        max_length=constants.GENRE_SLUG_MAX_LENGTH, unique=True)
+
+    class Meta:
+        verbose_name: str = 'genre'
+        verbose_name_plural: str = 'genre'
 
     def __str__(self):
         return self.name
@@ -14,8 +21,13 @@ class Genre(models.Model):
 
 class Category(models.Model):
     """Used to classify titles by categories."""
-    name = models.CharField(max_length=256)
-    slug = models.SlugField(max_length=50, unique=True)
+    name = models.CharField(max_length=constants.CATEGORY_NAME_MAX_LENGTH)
+    slug = models.SlugField(
+        max_length=constants.CATEGORY_SLUG_MAX_LENGTH, unique=True)
+
+    class Meta:
+        verbose_name: str = 'category'
+        verbose_name_plural: str = 'category'
 
     def __str__(self):
         return self.name
@@ -23,7 +35,8 @@ class Category(models.Model):
 
 class Title(models.Model):
     """Used as a source of data about art titles."""
-    name = models.CharField(max_length=256, unique=True)
+    name = models.CharField(
+        max_length=constants.TITLE_NAME_MAX_LENGTH, unique=True)
     year = models.IntegerField(null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     category = models.ForeignKey(
@@ -41,6 +54,11 @@ class Title(models.Model):
         verbose_name='Genre',
         blank=False,
     )
+
+    class Meta:
+        verbose_name: str = 'title'
+        verbose_name_plural: str = 'title'
+        ordering: tuple[str] = ('year',)
 
     def __str__(self):
         return self.name
@@ -76,7 +94,7 @@ class Review(models.Model):
         verbose_name='product'
     )
     text = models.CharField(
-        max_length=200
+        max_length=constants.REVIEW_TEXT_MAX_LENGTH
     )
     author = models.ForeignKey(
         User,
@@ -87,8 +105,8 @@ class Review(models.Model):
     score = models.IntegerField(
         default=1,
         validators=(
-            MinValueValidator(1),
-            MaxValueValidator(10)
+            MinValueValidator(constants.MIN_SCORE_AMOUNT),
+            MaxValueValidator(constants.MAX_SCORE_AMOUNT)
         ),
         error_messages={'validators': 'Rating from 1 to 10!'},
         verbose_name='rating'
@@ -100,14 +118,14 @@ class Review(models.Model):
     )
 
     class Meta:
-        verbose_name = 'feedback'
-        verbose_name_plural = 'feedbacks'
-        constraints = [
+        verbose_name: str = 'review'
+        verbose_name_plural: str = 'review'
+        constraints: list[UniqueConstraint] = [
             models.UniqueConstraint(
                 fields=('title', 'author',),
-                name='unique feedback'
+                name='unique review'
             )]
-        ordering = ('-pub_date',)
+        ordering: tuple[str] = ('-pub_date',)
 
     def __str__(self):
         return self.text
@@ -122,7 +140,7 @@ class Comment(models.Model):
         verbose_name='feedback'
     )
     text = models.CharField(
-        max_length=200
+        max_length=constants.COMMENT_TEXT_MAX_LENGTH
     )
     author = models.ForeignKey(
         User,
@@ -137,9 +155,9 @@ class Comment(models.Model):
     )
 
     class Meta:
-        verbose_name = 'comment'
-        verbose_name_plural = 'comments'
-        ordering = ('-pub_date',)
+        verbose_name: str = 'comment'
+        verbose_name_plural: str = 'comments'
+        ordering: tuple[str] = ('-pub_date',)
 
     def __str__(self):
         return self.text
