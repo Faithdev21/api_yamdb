@@ -2,7 +2,7 @@ from rest_framework.permissions import SAFE_METHODS, BasePermission
 
 
 class AdminModeratorAuthorPermission(BasePermission):
-    """Used to issue permissions to admins, moderators, authors."""
+    """Permissions to admins, moderators, authors."""
 
     def has_permission(self, request, view) -> bool:
         return (request.method in SAFE_METHODS
@@ -16,14 +16,14 @@ class AdminModeratorAuthorPermission(BasePermission):
 
 
 class IsAdmin(BasePermission):
-    """Used to issue permissions to admins."""
+    """Permissions to admins."""
     def has_permission(self, request, view) -> bool:
         return (request.user.is_superuser
                 or (request.user.is_authenticated and request.user.is_admin))
 
 
 class IsAdminOrReadOnly(BasePermission):
-    """Used to issue permissions to admins or read only."""
+    """Permissions to admins or read only."""
 
     def has_permission(self, request, view) -> bool:
         return (

@@ -1,8 +1,11 @@
+from api import constants
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.relations import SlugRelatedField
 from reviews.models import Category, Comment, Genre, Review, Title
+from users.models import User
+from users.validators import validate_email_length, validate_username
 
 
 class GenreSerializer(serializers.ModelSerializer):
@@ -10,7 +13,7 @@ class GenreSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Genre
-        fields: tuple[str, str] = ('name', 'slug')
+        fields: tuple[str, ...] = ('name', 'slug')
         lookup_field: str = 'slug'
 
 
@@ -19,12 +22,12 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields: tuple[str, str] = ('name', 'slug')
+        fields: tuple[str, ...] = ('name', 'slug')
         lookup_field: str = 'slug'
 
 
-class TitlePostSerializer(serializers.ModelSerializer):
-    """Serializer for Title model for not safe methods."""
+class TitleWriteSerializer(serializers.ModelSerializer):
+    """Serializer for Title model. POST, PATCH methods."""
     category = SlugRelatedField(
         slug_field='slug',
         queryset=Category.objects.all(),
@@ -40,8 +43,8 @@ class TitlePostSerializer(serializers.ModelSerializer):
         fields: str = '__all__'
 
 
-class TitleSerializer(serializers.ModelSerializer):
-    """Serializer for Title model for safe methods."""
+class TitleReadSerializer(serializers.ModelSerializer):
+    """Serializer for Title model. Just safe methods."""
     genre = GenreSerializer(many=True)
     category = CategorySerializer(read_only=True)
     rating = serializers.IntegerField(read_only=True)
@@ -63,13 +66,13 @@ class ReviewSerializer(serializers.ModelSerializer):
     )
 
     def validate_score(self, value: int) -> int:
-        """Checks the rating requirements."""
+        """Rating validation."""
         if 0 >= value >= 10:
             raise serializers.ValidationError('Rating from 1 to 10!')
         return value
 
     def validate(self, data: dict) -> dict:
-        """Checks the limits on the maximum number of reviews per product."""
+        """Checking the limit on the maximum number of product reviews."""
         request = self.context['request']
         author = request.user
         title_id: int = self.context.get('view').kwargs.get('title_id')
@@ -99,3 +102,55 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         fields: str = '__all__'
         model = Comment
+
+
+class UserSerializer(serializers.ModelSerializer):
+    """Serializer for User model."""
+    class Meta:
+        model = User
+        fields: tuple[str] = (
+            'username',
+            'email',
+            'first_name',
+            'last_name',
+            'bio',
+            'role'
+        )
+
+
+class MeSerializer(serializers.ModelSerializer):
+    """Serializer for User model without permission to change role."""
+    class Meta:
+        model = User
+        fields: [str] = (
+            'username',
+            'email',
+            'first_name',
+            'last_name',
+            'bio',
+            'role'
+        )
+        read_only_fields: tuple[str] = ('role',)
+
+
+class UserSignupSerializer(serializers.Serializer):
+    """Serializer for User signup."""
+    username = serializers.CharField(
+        required=True,
+        max_length=constants.USER_USERNAME_MAX_LENGTH,
+        validators=[validate_username, ]
+    )
+    email = serializers.EmailField(
+        required=True,
+        validators=[validate_email_length, ]
+    )
+
+
+class TokenSerializer(serializers.Serializer):
+    """Serializer for getting token."""
+    username = serializers.CharField(
+        required=True,
+        max_length=constants.USER_USERNAME_MAX_LENGTH,
+        validators=[validate_username, ]
+    )
+    confirmation_code = serializers.CharField(required=True)

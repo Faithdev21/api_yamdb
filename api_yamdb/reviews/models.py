@@ -5,36 +5,34 @@ from django.db.models import UniqueConstraint
 from users.models import User
 
 
-class Genre(models.Model):
-    """Used to classify titles by genre."""
-    name = models.CharField(max_length=constants.GENRE_NAME_MAX_LENGTH)
+class GenreCategory(models.Model):
+    """Base class for Genre and Category."""
+    name = models.CharField(max_length=constants.NAME_MAX_LENGTH)
     slug = models.SlugField(
-        max_length=constants.GENRE_SLUG_MAX_LENGTH, unique=True)
+        max_length=constants.SLUG_MAX_LENGTH, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Genre(GenreCategory):
+    """Genres of titles."""
 
     class Meta:
         verbose_name: str = 'genre'
         verbose_name_plural: str = 'genre'
 
-    def __str__(self):
-        return self.name
 
-
-class Category(models.Model):
-    """Used to classify titles by categories."""
-    name = models.CharField(max_length=constants.CATEGORY_NAME_MAX_LENGTH)
-    slug = models.SlugField(
-        max_length=constants.CATEGORY_SLUG_MAX_LENGTH, unique=True)
+class Category(GenreCategory):
+    """Categories of titles."""
 
     class Meta:
         verbose_name: str = 'category'
         verbose_name_plural: str = 'category'
 
-    def __str__(self):
-        return self.name
-
 
 class Title(models.Model):
-    """Used as a source of data about art titles."""
+    """Titles."""
     name = models.CharField(
         max_length=constants.TITLE_NAME_MAX_LENGTH, unique=True)
     year = models.IntegerField(null=True, blank=True)
@@ -65,7 +63,7 @@ class Title(models.Model):
 
 
 class GenreTitle(models.Model):
-    """Used to classify titles by genre."""
+    """Linking table for genres and categories."""
     genre = models.ForeignKey(
         Genre,
         on_delete=models.SET_NULL,
@@ -86,7 +84,7 @@ class GenreTitle(models.Model):
 
 
 class Review(models.Model):
-    """Used as a source of data about title reviews."""
+    """Reviews of titles."""
     title = models.ForeignKey(
         Title,
         on_delete=models.CASCADE,
@@ -132,7 +130,7 @@ class Review(models.Model):
 
 
 class Comment(models.Model):
-    """Used as a source of data about comments to title reviews."""
+    """Comments of titles."""
     review = models.ForeignKey(
         Review,
         on_delete=models.CASCADE,
