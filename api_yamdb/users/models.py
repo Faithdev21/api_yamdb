@@ -5,6 +5,7 @@ from users.validators import validate_username
 
 
 class User(AbstractUser):
+    """ Custom User model."""
     USER = 'user'
     MODERATOR = 'moderator'
     ADMIN = 'admin'
@@ -14,7 +15,6 @@ class User(AbstractUser):
         ('moderator', 'MODERATOR'),
         ('admin', 'ADMIN'),
     )
-    """ Custom User model."""
     bio = models.TextField(
         'Biography',
         blank=True,
