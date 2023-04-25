@@ -27,16 +27,9 @@
 ЗАГРУЗКА ТЕСТОВЫХ ДАННЫХ:
 
 Тестовые данные для ресурсов Users, Titles, Categories, Genres, Reviews и Comments
-загружаются файлами в формате csv
+загружаются файлами в формате csv командой:
 
-Способы загрузки тестовых данных:
-
-- средствами SQLite
-  (https://sqlite.com/matrix/cli.html)
-- скрипт из библиотеки csv
-  (https://docs.python.org/3/library/csv.html)
-- management-команда через Django ORM
-  (https://docs.djangoproject.com/en/3.2/howto/custom-management-commands/#module-django.core.management)
+- `python manage.py import_csv`
 
 ---
 

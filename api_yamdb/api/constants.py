@@ -10,13 +10,3 @@ COMMENT_TEXT_MAX_LENGTH: int = 200
 USER_ROLE_MAX_LENGTH: int = 50
 USER_EMAIL_MAX_LENGTH: int = 254
 USER_USERNAME_MAX_LENGTH: int = 150
-
-USER = 'user'
-MODERATOR = 'moderator'
-ADMIN = 'admin'
-
-ROLE_CHOICES: tuple[tuple[str, str], ...] = (
-    ('user', 'USER',),
-    ('moderator', 'MODERATOR'),
-    ('admin', 'ADMIN'),
-)

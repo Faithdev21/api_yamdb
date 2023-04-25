@@ -105,6 +105,8 @@ STATIC_URL: str = '/static/'
 
 STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
 
+CSV_FILES_DIR = os.path.join(BASE_DIR, 'static/data')
+
 DEFAULT_AUTO_FIELD: str = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL: str = 'users.User'
 
@@ -126,4 +128,12 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
-CSV_FILES_DIR = os.path.join(BASE_DIR, 'static/data')
+PATH_CSV_FILES = {
+    'category': str(BASE_DIR.joinpath('static/data/category.csv')),
+    'genre': str(BASE_DIR.joinpath('static/data/genre.csv')),
+    'title': str(BASE_DIR.joinpath('static/data/titles.csv')),
+    'genretitle': str(BASE_DIR.joinpath('static/data/genre_title.csv')),
+    'user': str(BASE_DIR.joinpath('static/data/users.csv')),
+    'review': str(BASE_DIR.joinpath('static/data/review.csv')),
+    'comment': str(BASE_DIR.joinpath('static/data/comments.csv')),
+}

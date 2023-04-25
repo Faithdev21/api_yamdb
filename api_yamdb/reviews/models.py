@@ -34,7 +34,7 @@ class Category(GenreCategory):
 class Title(models.Model):
     """Titles."""
     name = models.CharField(
-        max_length=constants.TITLE_NAME_MAX_LENGTH, unique=True)
+        max_length=constants.TITLE_NAME_MAX_LENGTH)
     year = models.IntegerField(null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     category = models.ForeignKey(

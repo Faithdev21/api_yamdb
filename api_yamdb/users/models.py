@@ -5,6 +5,15 @@ from users.validators import validate_username
 
 
 class User(AbstractUser):
+    USER = 'user'
+    MODERATOR = 'moderator'
+    ADMIN = 'admin'
+
+    ROLE_CHOICES: tuple[tuple[str, str], ...] = (
+        ('user', 'USER',),
+        ('moderator', 'MODERATOR'),
+        ('admin', 'ADMIN'),
+    )
     """ Custom User model."""
     bio = models.TextField(
         'Biography',
@@ -12,7 +21,7 @@ class User(AbstractUser):
     )
     role = models.CharField(
         'Role',
-        choices=constants.ROLE_CHOICES,
+        choices=ROLE_CHOICES,
         default="user",
         max_length=constants.USER_ROLE_MAX_LENGTH
     )
@@ -38,9 +47,9 @@ class User(AbstractUser):
     @property
     def is_moderator(self) -> bool:
         """ Check if the user is a moderator."""
-        return self.role == constants.MODERATOR
+        return self.role == self.MODERATOR
 
     @property
     def is_admin(self) -> bool:
         """ Check if the user is an admin."""
-        return self.role == constants.ADMIN or self.is_staff
+        return self.role == self.ADMIN or self.is_staff
